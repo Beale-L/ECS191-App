@@ -1,0 +1,170 @@
+{
+  "collections": [
+    {
+      "id": "col-best-parks",
+      "title": "Best Parks in Davis",
+      "tag": "Parks",
+      "authorName": "greenbeltgrace",
+      "description": "Shady lawns, playgrounds, and greenbelt loops worth a weekend afternoon.",
+      "locationIDs": ["loc-central-park", "loc-community-park", "loc-sycamore-park", "loc-arroyo-park", "loc-slide-hill-park", "loc-northstar-park", "loc-mace-ranch-park", "loc-arboretum"],
+      "likeCount": 128,
+      "dislikeCount": 4
+    },
+    {
+      "id": "col-study-spots",
+      "title": "Study Spots That Won't Kick You Out",
+      "tag": "Study Spots",
+      "authorName": "aggie_alex",
+      "description": "Outlets, Wi-Fi, and coffee within reach. Ranked by how long you can stay.",
+      "locationIDs": ["loc-mishkas", "loc-temple-coffee", "loc-cloud-forest", "loc-pachamama", "loc-shields-library", "loc-memorial-union"],
+      "likeCount": 214,
+      "dislikeCount": 9
+    },
+    {
+      "id": "col-davis-end-to-end",
+      "title": "Davis End to End",
+      "tag": "Sightseeing",
+      "authorName": "townandgown",
+      "description": "A bike tour of the whole town, from the Raptor Center to Wildhorse. Pack water.",
+      "locationIDs": ["loc-central-park", "loc-varsity", "loc-bike-hall-of-fame", "loc-amtrak", "loc-coop", "loc-memorial-union", "loc-shields-library", "loc-mondavi", "loc-manetti-shrem", "loc-arboretum", "loc-ucd-stadium", "loc-raptor-center", "loc-arroyo-park", "loc-northstar-park", "loc-wildhorse", "loc-nugget-covell", "loc-toad-hollow"],
+      "likeCount": 152,
+      "dislikeCount": 3
+    },
+    {
+      "id": "col-pizza-night",
+      "title": "Pizza Night",
+      "tag": "Pizza",
+      "authorName": "slicehunter",
+      "description": "Downtown classics plus two worth the drive across town.",
+      "locationIDs": ["loc-woodstocks", "loc-steves-place", "loc-symposium", "loc-lamppost"],
+      "likeCount": 66,
+      "dislikeCount": 11
+    },
+    {
+      "id": "col-dog-friendly",
+      "title": "Dog-Friendly Davis",
+      "tag": "Parks",
+      "authorName": "corgi_on_a_bike",
+      "description": "Off-leash areas and long walks your dog will thank you for.",
+      "locationIDs": ["loc-toad-hollow", "loc-community-park", "loc-central-park", "loc-arboretum", "loc-northstar-park", "loc-slide-hill-park"],
+      "likeCount": 87,
+      "dislikeCount": 2
+    },
+    {
+      "id": "col-one-burger",
+      "title": "The Only Burger That Matters",
+      "tag": "Burgers",
+      "authorName": "olivedriveonly",
+      "description": "One spot. No notes.",
+      "locationIDs": ["loc-redrum"],
+      "likeCount": 41,
+      "dislikeCount": 17
+    },
+    {
+      "id": "col-date-night",
+      "title": "Date Night Downtown",
+      "tag": "Date Night",
+      "authorName": "twoticketsplease",
+      "description": "Dinner, a show, and dessert, all within a few blocks.",
+      "locationIDs": ["loc-bistro-33", "loc-delta-of-venus", "loc-varsity", "loc-ciocolat", "loc-mondavi"],
+      "likeCount": 173,
+      "dislikeCount": 6
+    },
+    {
+      "id": "col-brunch",
+      "title": "Brunch Worth the Wait",
+      "tag": "Brunch",
+      "authorName": "eggsbenedavis",
+      "description": "The lines are long for a reason. Go early on Saturdays.",
+      "locationIDs": ["loc-crepeville", "loc-delta-of-venus", "loc-cloud-forest", "loc-farmers-market", "loc-mishkas"],
+      "likeCount": 198,
+      "dislikeCount": 14
+    },
+    {
+      "id": "col-cheap-eats",
+      "title": "Cheap Eats Near Campus",
+      "tag": "Cheap Eats",
+      "authorName": "brokeaggie",
+      "description": "Full meals for under fifteen dollars, most of them a short bike ride from class.",
+      "locationIDs": ["loc-ali-baba", "loc-burgers-and-brew", "loc-sophias-thai", "loc-dos-coyotes", "loc-redrum"],
+      "likeCount": 305,
+      "dislikeCount": 21
+    },
+    {
+      "id": "col-coffee-crawl",
+      "title": "Downtown Coffee Crawl",
+      "tag": "Coffee",
+      "authorName": "pourover_pat",
+      "description": "Five cups, one afternoon. Pace yourself.",
+      "locationIDs": ["loc-temple-coffee", "loc-mishkas", "loc-pachamama", "loc-cloud-forest", "loc-ciocolat"],
+      "likeCount": 119,
+      "dislikeCount": 5
+    }
+  ],
+  "locations": [
+    { "id": "loc-central-park", "name": "Central Park", "category": "Park", "address": "401 C St, Davis, CA 95616", "latitude": 38.5459, "longitude": -121.7446, "rating": 4.6, "reviewCount": 412 },
+    { "id": "loc-community-park", "name": "Community Park", "category": "Park", "address": "1405 F St, Davis, CA 95616", "latitude": 38.5566, "longitude": -121.7419, "rating": 4.5, "reviewCount": 188 },
+    { "id": "loc-sycamore-park", "name": "Sycamore Park", "category": "Park", "address": "1313 Sycamore Ln, Davis, CA 95616", "latitude": 38.5538, "longitude": -121.7624, "rating": 4.4, "reviewCount": 96 },
+    { "id": "loc-arroyo-park", "name": "Arroyo Park", "category": "Park", "address": "Shasta Dr, Davis, CA 95616", "latitude": 38.5622, "longitude": -121.7813, "rating": 4.3, "reviewCount": 71 },
+    { "id": "loc-slide-hill-park", "name": "Slide Hill Park", "category": "Park", "address": "Colgate Dr, Davis, CA 95618", "latitude": 38.5568, "longitude": -121.7228, "rating": 4.4, "reviewCount": 64 },
+    { "id": "loc-northstar-park", "name": "Northstar Park", "category": "Park", "address": "North Davis, CA 95618", "latitude": 38.5765, "longitude": -121.7330, "rating": 4.5, "reviewCount": 83 },
+    { "id": "loc-mace-ranch-park", "name": "Mace Ranch Park", "category": "Park", "address": "East Davis, CA 95618", "latitude": 38.5588, "longitude": -121.7040, "rating": 4.4, "reviewCount": 58 },
+    { "id": "loc-arboretum", "name": "UC Davis Arboretum", "category": "Garden", "address": "UC Davis, Davis, CA 95616", "latitude": 38.5318, "longitude": -121.7565, "rating": 4.8, "reviewCount": 640 },
+    { "id": "loc-toad-hollow", "name": "Toad Hollow Dog Park", "category": "Dog Park", "address": "1919 2nd St, Davis, CA 95618", "latitude": 38.5490, "longitude": -121.7095, "rating": 4.5, "reviewCount": 133 },
+
+    { "id": "loc-mishkas", "name": "Mishka's Cafe", "category": "Coffee", "address": "610 2nd St, Davis, CA 95616", "latitude": 38.5437, "longitude": -121.7404, "rating": 4.4, "reviewCount": 520, "priceLevel": 1 },
+    { "id": "loc-temple-coffee", "name": "Temple Coffee Roasters", "category": "Coffee", "address": "239 G St, Davis, CA 95616", "latitude": 38.5443, "longitude": -121.7388, "rating": 4.5, "reviewCount": 610, "priceLevel": 2 },
+    { "id": "loc-cloud-forest", "name": "Cloud Forest Cafe", "category": "Cafe", "address": "222 D St, Davis, CA 95616", "latitude": 38.5441, "longitude": -121.7426, "rating": 4.2, "reviewCount": 300, "priceLevel": 1 },
+    { "id": "loc-pachamama", "name": "Pachamama Coffee", "category": "Coffee", "address": "G St, Davis, CA 95616", "latitude": 38.5431, "longitude": -121.7389, "rating": 4.6, "reviewCount": 210, "priceLevel": 1 },
+    { "id": "loc-shields-library", "name": "Shields Library", "category": "Library", "address": "UC Davis, Davis, CA 95616", "latitude": 38.5397, "longitude": -121.7495, "rating": 4.3, "reviewCount": 150 },
+    { "id": "loc-memorial-union", "name": "UC Davis Memorial Union", "category": "Student Center", "address": "UC Davis, Davis, CA 95616", "latitude": 38.5424, "longitude": -121.7497, "rating": 4.1, "reviewCount": 122 },
+
+    { "id": "loc-woodstocks", "name": "Woodstock's Pizza", "category": "Pizza", "address": "238 G St, Davis, CA 95616", "latitude": 38.5445, "longitude": -121.7392, "rating": 4.3, "reviewCount": 700, "priceLevel": 2 },
+    { "id": "loc-steves-place", "name": "Steve's Place Pizza", "category": "Pizza", "address": "314 F St, Davis, CA 95616", "latitude": 38.5451, "longitude": -121.7405, "rating": 4.2, "reviewCount": 330, "priceLevel": 2 },
+    { "id": "loc-symposium", "name": "Symposium Restaurant", "category": "Greek & Pizza", "address": "1620 E 8th St, Davis, CA 95616", "latitude": 38.5523, "longitude": -121.7285, "rating": 4.3, "reviewCount": 260, "priceLevel": 2 },
+    { "id": "loc-lamppost", "name": "Lamppost Pizza", "category": "Pizza", "address": "Lake Blvd, Davis, CA 95616", "latitude": 38.5650, "longitude": -121.7830, "rating": 4.0, "reviewCount": 140, "priceLevel": 2 },
+
+    { "id": "loc-redrum", "name": "Redrum Burger", "category": "Burgers", "address": "978 Olive Dr, Davis, CA 95616", "latitude": 38.5412, "longitude": -121.7335, "rating": 4.4, "reviewCount": 1100, "priceLevel": 1 },
+
+    { "id": "loc-varsity", "name": "Varsity Theatre", "category": "Theater", "address": "616 2nd St, Davis, CA 95616", "latitude": 38.5437, "longitude": -121.7396, "rating": 4.5, "reviewCount": 210, "priceLevel": 2 },
+    { "id": "loc-bike-hall-of-fame", "name": "U.S. Bicycling Hall of Fame", "category": "Museum", "address": "303 3rd St, Davis, CA 95616", "latitude": 38.5450, "longitude": -121.7436, "rating": 4.6, "reviewCount": 95 },
+    { "id": "loc-amtrak", "name": "Davis Amtrak Station", "category": "Train Station", "address": "840 2nd St, Davis, CA 95616", "latitude": 38.5436, "longitude": -121.7377, "rating": 4.0, "reviewCount": 180 },
+    { "id": "loc-coop", "name": "Davis Food Co-op", "category": "Grocery", "address": "620 G St, Davis, CA 95616", "latitude": 38.5480, "longitude": -121.7386, "rating": 4.4, "reviewCount": 350, "priceLevel": 2 },
+    { "id": "loc-mondavi", "name": "Mondavi Center", "category": "Performing Arts", "address": "UC Davis, Davis, CA 95616", "latitude": 38.5345, "longitude": -121.7490, "rating": 4.8, "reviewCount": 290, "priceLevel": 3 },
+    { "id": "loc-manetti-shrem", "name": "Manetti Shrem Museum of Art", "category": "Museum", "address": "254 Old Davis Rd, Davis, CA 95616", "latitude": 38.5334, "longitude": -121.7473, "rating": 4.6, "reviewCount": 140 },
+    { "id": "loc-ucd-stadium", "name": "UC Davis Health Stadium", "category": "Stadium", "address": "UC Davis, Davis, CA 95616", "latitude": 38.5367, "longitude": -121.7640, "rating": 4.4, "reviewCount": 110, "priceLevel": 2 },
+    { "id": "loc-raptor-center", "name": "California Raptor Center", "category": "Wildlife Center", "address": "1340 Equine Ln, Davis, CA 95616", "latitude": 38.5328, "longitude": -121.7932, "rating": 4.7, "reviewCount": 160 },
+    { "id": "loc-wildhorse", "name": "Wildhorse Golf Club", "category": "Golf", "address": "2323 Rockwell Dr, Davis, CA 95618", "latitude": 38.5780, "longitude": -121.7075, "rating": 4.2, "reviewCount": 90, "priceLevel": 3 },
+    { "id": "loc-nugget-covell", "name": "Nugget Markets", "category": "Grocery", "address": "1414 E Covell Blvd, Davis, CA 95616", "latitude": 38.5608, "longitude": -121.7277, "rating": 4.5, "reviewCount": 420, "priceLevel": 3 },
+    { "id": "loc-bistro-33", "name": "Bistro 33", "category": "American", "address": "226 F St, Davis, CA 95616", "latitude": 38.5444, "longitude": -121.7405, "rating": 4.1, "reviewCount": 890, "priceLevel": 3 },
+    { "id": "loc-delta-of-venus", "name": "Delta of Venus", "category": "Cafe", "address": "122 B St, Davis, CA 95616", "latitude": 38.5432, "longitude": -121.7447, "rating": 4.4, "reviewCount": 760, "priceLevel": 1 },
+    { "id": "loc-ciocolat", "name": "Ciocolat", "category": "Dessert", "address": "301 B St, Davis, CA 95616", "latitude": 38.5452, "longitude": -121.7448, "rating": 4.3, "reviewCount": 540, "priceLevel": 2 },
+    { "id": "loc-crepeville", "name": "Crepeville", "category": "Breakfast & Brunch", "address": "330 3rd St, Davis, CA 95616", "latitude": 38.545, "longitude": -121.7431, "rating": 4.2, "reviewCount": 1650, "priceLevel": 1 },
+    { "id": "loc-farmers-market", "name": "Davis Farmers Market", "category": "Farmers Market", "address": "Central Park, 4th & C St, Davis, CA 95616", "latitude": 38.5462, "longitude": -121.744, "rating": 4.8, "reviewCount": 980 },
+    { "id": "loc-ali-baba", "name": "Ali Baba", "category": "Middle Eastern", "address": "220 3rd St, Davis, CA 95616", "latitude": 38.5451, "longitude": -121.7441, "rating": 4.4, "reviewCount": 1120, "priceLevel": 1 },
+    { "id": "loc-burgers-and-brew", "name": "Burgers and Brew", "category": "Burgers", "address": "403 3rd St, Davis, CA 95616", "latitude": 38.5449, "longitude": -121.7421, "rating": 4.0, "reviewCount": 1300, "priceLevel": 2 },
+    { "id": "loc-sophias-thai", "name": "Sophia's Thai Kitchen", "category": "Thai", "address": "129 E St, Davis, CA 95616", "latitude": 38.5433, "longitude": -121.7416, "rating": 4.2, "reviewCount": 950, "priceLevel": 2 },
+    { "id": "loc-dos-coyotes", "name": "Dos Coyotes Border Cafe", "category": "Mexican", "address": "1411 W Covell Blvd, Davis, CA 95616", "latitude": 38.5617, "longitude": -121.7625, "rating": 3.9, "reviewCount": 610, "priceLevel": 1 }
+  ],
+  "comments": [
+    { "id": "cmt-parks-1", "collectionID": "col-best-parks", "authorName": "picnicpete", "text": "Central Park on a Saturday morning with the farmers market is unbeatable.", "createdAt": "2026-09-20T17:42:00Z" },
+    { "id": "cmt-parks-2", "collectionID": "col-best-parks", "authorName": "aggie_alex", "text": "Would add Covell Park, but Slide Hill's sledding hill makes up for it.", "createdAt": "2026-09-28T02:15:00Z" },
+    { "id": "cmt-parks-3", "collectionID": "col-best-parks", "authorName": "greenbeltgrace", "text": "Thanks all! Arboretum loop is best around sunset.", "createdAt": "2026-10-02T23:05:00Z" },
+    { "id": "cmt-study-1", "collectionID": "col-study-spots", "authorName": "midtermmaya", "text": "Temple has outlets along the back wall if you get there before 10.", "createdAt": "2026-09-15T16:30:00Z" },
+    { "id": "cmt-study-2", "collectionID": "col-study-spots", "authorName": "quietcarrel", "text": "Shields 24-hour room during finals week is the real MVP.", "createdAt": "2026-10-06T07:48:00Z" },
+    { "id": "cmt-e2e-1", "collectionID": "col-davis-end-to-end", "authorName": "bikeloop_ben", "text": "Did the whole route in one afternoon. Raptor Center closes at 4, plan ahead.", "createdAt": "2026-08-30T21:10:00Z" },
+    { "id": "cmt-e2e-2", "collectionID": "col-davis-end-to-end", "authorName": "townandgown", "text": "Added the Bicycling Hall of Fame since you can't do this tour without it.", "createdAt": "2026-09-12T18:00:00Z" },
+    { "id": "cmt-e2e-3", "collectionID": "col-davis-end-to-end", "authorName": "sunsetsam", "text": "Wildhorse at the end is a long way out. Worth it for the view though.", "createdAt": "2026-10-04T01:22:00Z" },
+    { "id": "cmt-pizza-1", "collectionID": "col-pizza-night", "authorName": "slicehunter", "text": "Woodstock's Tuesday deal is still going strong.", "createdAt": "2026-09-23T03:40:00Z" },
+    { "id": "cmt-pizza-2", "collectionID": "col-pizza-night", "authorName": "crustcritic", "text": "Lamppost's ranch is better than their pizza, and I mean that as a compliment.", "createdAt": "2026-10-08T04:12:00Z" },
+    { "id": "cmt-burger-1", "collectionID": "col-one-burger", "authorName": "olivedriveonly", "text": "Order the Paula's Pick. Trust me.", "createdAt": "2026-09-05T19:55:00Z" },
+    { "id": "cmt-burger-2", "collectionID": "col-one-burger", "authorName": "latenightlee", "text": "Strong opinion, correct opinion.", "createdAt": "2026-09-30T05:30:00Z" },
+    { "id": "cmt-date-1", "collectionID": "col-date-night", "authorName": "marigold_m", "text": "Bistro 33's patio then a movie at the Varsity. Perfect night.", "createdAt": "2026-10-03T04:30:00Z" },
+    { "id": "cmt-date-2", "collectionID": "col-date-night", "authorName": "twoticketsplease", "text": "Ciocolat closes earlier than you'd think. Do dessert first if you're seeing a late show.", "createdAt": "2026-10-09T02:10:00Z" },
+    { "id": "cmt-brunch-1", "collectionID": "col-brunch", "authorName": "sundaysara", "text": "Crepeville's line moves faster than it looks.", "createdAt": "2026-09-27T17:20:00Z" },
+    { "id": "cmt-brunch-2", "collectionID": "col-brunch", "authorName": "eggsbenedavis", "text": "Farmers Market pastries count as brunch. I don't make the rules.", "createdAt": "2026-10-11T16:45:00Z" },
+    { "id": "cmt-cheap-1", "collectionID": "col-cheap-eats", "authorName": "brokeaggie", "text": "Ali Baba's falafel plate fed me through midterms.", "createdAt": "2026-10-01T20:05:00Z" },
+    { "id": "cmt-cheap-2", "collectionID": "col-cheap-eats", "authorName": "bikelane_bo", "text": "Dos Coyotes is a trek from campus but worth it.", "createdAt": "2026-10-07T23:30:00Z" },
+    { "id": "cmt-coffee-1", "collectionID": "col-coffee-crawl", "authorName": "decafdan", "text": "Did all five. Did not sleep. Ten out of ten.", "createdAt": "2026-10-05T22:15:00Z" }
+  ]
+}
