@@ -114,12 +114,6 @@ struct Catalog {
         collections.first { $0.id == id }
     }
 
-    /// Distinct tags in display order, for suggesting labels.
-    var tags: [String] {
-        var seen = Set<String>()
-        return collections.map(\.tag).filter { seen.insert($0.lowercased()).inserted }
-    }
-
     func location(id: Location.ID) -> Location? {
         locationsByID[id]
     }

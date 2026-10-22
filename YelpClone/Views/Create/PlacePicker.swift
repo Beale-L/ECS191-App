@@ -1,11 +1,15 @@
 import SwiftUI
 
-/// Picks places for a collection: places already in the app, results from
-/// Apple Maps, or a dropped pin for somewhere Apple Maps doesn't list yet.
+/// Picks places for a collection. Before searching it suggests places that
+/// fit the draft; searching covers places in the app and Apple Maps, and a
+/// dropped pin covers somewhere Apple Maps doesn't list yet.
 struct PlacePicker: View {
     let catalog: Catalog
     @Binding var draft: CollectionDraft
 
+    /// Taken when the picker appears, so a suggestion stays put (with a
+    /// checkmark) when tapped instead of jumping to Your Picks.
+    @State private var ideas: PlaceIdeas?
     @State private var query = ""
     @State private var mapResults: [Location] = []
     @State private var searchState = SearchState.idle
@@ -17,9 +21,12 @@ struct PlacePicker: View {
     private var trimmedQuery: String { query.trimmingCharacters(in: .whitespaces) }
 
     /// Bundled places, places added before, and ones added during this edit.
+    private var allPlaces: [Location] {
+        catalog.allLocations + draft.newPlaces.filter { catalog.location(id: $0.id) == nil }
+    }
+
     private var appPlaces: [Location] {
-        let fresh = draft.newPlaces.filter { catalog.location(id: $0.id) == nil }
-        let all = catalog.allLocations + fresh
+        let all = allPlaces
         let words = Catalog.normalized(trimmedQuery).split(whereSeparator: \.isWhitespace)
         guard !words.isEmpty else { return all }
         return all.filter { place in
@@ -38,24 +45,19 @@ struct PlacePicker: View {
 
     var body: some View {
         List {
-            // Before searching, put the ways to add a new place up top, where
-            // they're easy to find above the long list.
             if trimmedQuery.isEmpty {
+                suggestions
+            } else {
                 Section {
-                    dropPinLink
-                } footer: {
-                    Text("Can't find a place? Search above to look it up on Apple Maps, or drop a pin for somewhere new.")
-                }
-            }
-
-            Section {
-                ForEach(appPlaces) { place in
-                    PlaceRow(place: place, isSelected: draft.locationIDs.contains(place.id)) {
-                        draft.togglePlace(place.id)
+                    if appPlaces.isEmpty {
+                        Text("No places in the app match.").foregroundStyle(.secondary)
                     }
+                    ForEach(appPlaces) { place in
+                        row(place)
+                    }
+                } header: {
+                    Text("In the App")
                 }
-            } header: {
-                Text(trimmedQuery.isEmpty ? "Places in the App" : "In the App")
             }
 
             if !trimmedQuery.isEmpty {
@@ -98,6 +100,7 @@ struct PlacePicker: View {
         .listStyle(.insetGrouped)
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search places or Apple Maps")
         .task(id: trimmedQuery) { await searchAppleMaps(for: trimmedQuery) }
+        .onAppear { ideas = PlaceIdeas(catalog: catalog, draft: draft) }
         .navigationTitle("Add Places")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -106,6 +109,72 @@ struct PlacePicker: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    /// What to show before searching: the draft's picks, then ideas, then
+    /// ways to find anything else.
+    @ViewBuilder
+    private var suggestions: some View {
+        let ideas = ideas ?? PlaceIdeas(catalog: catalog, draft: draft)
+        let shown = Set((ideas.forLabel + ideas.pairedWithPicks + ideas.popular).map(\.id))
+        let picks = draft.locationIDs.filter { !shown.contains($0) }.compactMap { id in allPlaces.first { $0.id == id } }
+
+        if !picks.isEmpty {
+            Section("Your Picks") {
+                ForEach(picks) { row($0) }
+            }
+        }
+        if !ideas.forLabel.isEmpty {
+            Section {
+                ForEach(ideas.forLabel) { row($0) }
+            } header: {
+                Text(suggestionHeader)
+            } footer: {
+                Text("Based on collections with the same label or similar titles.")
+            }
+        }
+        if !ideas.pairedWithPicks.isEmpty {
+            Section {
+                ForEach(ideas.pairedWithPicks) { row($0) }
+            } header: {
+                Text("Often Paired With Your Picks")
+            }
+        }
+        if !ideas.popular.isEmpty {
+            Section {
+                ForEach(ideas.popular) { row($0) }
+            } header: {
+                Text("Popular Places")
+            } footer: {
+                Text("Add a label or title to get suggestions that fit your collection.")
+            }
+        }
+        Section {
+            NavigationLink {
+                AllPlacesList(places: allPlaces, draft: $draft)
+            } label: {
+                LabeledContent {
+                    Text(allPlaces.count, format: .number)
+                } label: {
+                    Label("Browse All Places", systemImage: "list.bullet")
+                }
+            }
+            .accessibilityIdentifier("BrowseAllPlaces")
+            dropPinLink
+        } footer: {
+            Text("Can't find a place? Search above to look it up on Apple Maps, or drop a pin for somewhere new.")
+        }
+    }
+
+    private var suggestionHeader: String {
+        let tag = draft.tag.trimmingCharacters(in: .whitespaces)
+        return tag.isEmpty ? "Suggested for Your Title" : "Suggested for \u{201C}\(tag)\u{201D}"
+    }
+
+    private func row(_ place: Location) -> some View {
+        PlaceRow(place: place, isSelected: draft.locationIDs.contains(place.id)) {
+            draft.togglePlace(place.id)
         }
     }
 
@@ -140,6 +209,45 @@ struct PlacePicker: View {
     }
 }
 
+/// Every place in the app, grouped by type, with its own filter.
+private struct AllPlacesList: View {
+    let places: [Location]
+    @Binding var draft: CollectionDraft
+    @State private var filter = ""
+
+    private var groups: [(category: String, places: [Location])] {
+        let words = Catalog.normalized(filter.trimmingCharacters(in: .whitespaces)).split(whereSeparator: \.isWhitespace)
+        let matching = places.filter { place in
+            let text = Catalog.normalized("\(place.name) \(place.category) \(place.address)")
+            return words.allSatisfy { text.contains($0) }
+        }
+        return Dictionary(grouping: matching, by: \.category)
+            .map { (category: $0.key, places: $0.value) }
+            .sorted { $0.category.localizedStandardCompare($1.category) == .orderedAscending }
+    }
+
+    var body: some View {
+        List {
+            ForEach(groups, id: \.category) { group in
+                Section(group.category) {
+                    ForEach(group.places) { place in
+                        PlaceRow(place: place, isSelected: draft.locationIDs.contains(place.id)) {
+                            draft.togglePlace(place.id)
+                        }
+                    }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .searchable(text: $filter, prompt: "Filter places")
+        .overlay {
+            if groups.isEmpty { ContentUnavailableView.search(text: filter) }
+        }
+        .navigationTitle("All Places")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
 private struct PlaceRow: View {
     let place: Location
     let isSelected: Bool
@@ -165,5 +273,6 @@ private struct PlaceRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier("PlaceRow")
     }
 }

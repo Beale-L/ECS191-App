@@ -40,6 +40,10 @@ struct SeedFixture: Decodable {
         collection.locationIDs.compactMap { id in locations.first { $0.id == id } }
     }
 
+    /// The ten hand-written collections at the top of the grid. Tests that open
+    /// every card use these; walking all 300+ would take hours.
+    var handWritten: ArraySlice<Collection> { collections.prefix(10) }
+
     func collection(titled title: String) -> Collection {
         collections.first { $0.title == title }!
     }

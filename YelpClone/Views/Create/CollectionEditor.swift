@@ -13,6 +13,7 @@ struct CollectionEditor: View {
     @State private var draft: CollectionDraft
     @State private var showsProblems = false
     @State private var isConfirmingDelete = false
+    @FocusState private var isEditingLabel: Bool
     private let original: CollectionDraft
 
     init(catalog: Catalog, draft: CollectionDraft = CollectionDraft(),
@@ -31,6 +32,14 @@ struct CollectionEditor: View {
         }
     }
 
+    /// Completions while typing. With the field empty, popular labels show
+    /// only while it's focused, so they don't crowd a finished form.
+    private var labelSuggestions: [TagSuggestion] {
+        let isEmpty = draft.tag.trimmingCharacters(in: .whitespaces).isEmpty
+        guard !isEmpty || isEditingLabel else { return [] }
+        return catalog.tagSuggestions(for: draft.tag)
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -42,12 +51,20 @@ struct CollectionEditor: View {
                 Section {
                     TextField("Tacos", text: $draft.tag)
                         .textInputAutocapitalization(.words)
+                        .focused($isEditingLabel)
+                        .submitLabel(.done)
                         .accessibilityIdentifier("LabelField")
-                    LabelSuggestions(tags: catalog.tags, selection: $draft.tag)
+                    LabelSuggestions(
+                        suggestions: labelSuggestions,
+                        isShowingIdeas: draft.tag.trimmingCharacters(in: .whitespaces).isEmpty
+                    ) { tag in
+                        draft.tag = tag
+                        isEditingLabel = false
+                    }
                 } header: {
                     Text("Label")
                 } footer: {
-                    Text("Pick a label or type a new one. Labels help people find your collection in search.")
+                    Text("Start typing to use a label other people use, or make up a new one. Labels help people find your collection in search.")
                 }
 
                 Section("Description") {
@@ -113,6 +130,12 @@ struct CollectionEditor: View {
             .onDelete { draft.locationIDs.remove(atOffsets: $0) }
             .onMove { draft.locationIDs.move(fromOffsets: $0, toOffset: $1) }
 
+            ForEach(quickSuggestions) { place in
+                QuickAddRow(place: place) {
+                    withAnimation { draft.togglePlace(place.id) }
+                }
+            }
+
             NavigationLink {
                 PlacePicker(catalog: catalog, draft: $draft)
             } label: {
@@ -124,6 +147,11 @@ struct CollectionEditor: View {
         } footer: {
             if places.count > 1 { Text("Swipe to remove a place, or hold and drag to reorder.") }
         }
+    }
+
+    /// A few places to add with one tap, based on the label, title, and picks so far.
+    private var quickSuggestions: [Location] {
+        PlaceIdeas(catalog: catalog, draft: draft).quick
     }
 
     private func save() {
@@ -143,38 +171,66 @@ struct CollectionEditor: View {
     }
 }
 
-/// Existing labels as tappable chips, filtered by what's typed.
+/// Labels other people use that complete what's typed, as rows under the field.
 private struct LabelSuggestions: View {
-    let tags: [String]
-    @Binding var selection: String
-
-    private var suggestions: [String] {
-        let typed = Catalog.normalized(selection.trimmingCharacters(in: .whitespaces))
-        return tags.filter { typed.isEmpty || Catalog.normalized($0).hasPrefix(typed) }
-    }
+    let suggestions: [TagSuggestion]
+    /// True when nothing is typed, so these are popular labels rather than completions.
+    let isShowingIdeas: Bool
+    let select: (String) -> Void
 
     var body: some View {
         if !suggestions.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(suggestions, id: \.self) { tag in
-                        Button {
-                            selection = tag
-                        } label: {
-                            TagChip(tag: tag)
-                                .overlay {
-                                    if tag == selection {
-                                        Capsule().strokeBorder(TagStyle(tag: tag).color, lineWidth: 1.5)
-                                    }
-                                }
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Use label \(tag)")
+            if isShowingIdeas {
+                Text("Popular labels")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            ForEach(suggestions, id: \.self) { suggestion in
+                Button {
+                    select(suggestion.tag)
+                } label: {
+                    HStack {
+                        TagChip(tag: suggestion.tag)
+                        Spacer()
+                        Text("^[\(suggestion.count) collection](inflect: true)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                    .contentShape(Rectangle())
                 }
-                .padding(.vertical, 2)
+                .buttonStyle(.plain)
+                .accessibilityLabel("Use label \(suggestion.tag)")
             }
         }
+    }
+}
+
+/// A suggested place with a one-tap Add, shown under the draft's places.
+private struct QuickAddRow: View {
+    let place: Location
+    let add: () -> Void
+
+    var body: some View {
+        Button(action: add) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(place.name)
+                        .foregroundStyle(.primary)
+                    Text("Suggested · \(place.category)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "plus.circle.fill")
+                    .font(.title3)
+                    .foregroundStyle(.tint)
+            }
+            .contentShape(Rectangle())
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Add \(place.name)")
+        .accessibilityHint("Suggested place")
+        .accessibilityIdentifier("QuickAdd")
     }
 }
 

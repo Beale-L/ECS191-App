@@ -16,29 +16,28 @@ final class SearchUITests: XCTestCase {
         let field = app.searchFields.firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 3), "search field should always be visible")
         field.tap()
-        field.typeText("temple")
+        // Symposium is only in Pizza Night, so this matches by place alone.
+        field.typeText("symposium")
 
-        let studySpots = card("Study Spots That Won't Kick You Out")
-        let coffeeCrawl = card("Downtown Coffee Crawl")
-        XCTAssertTrue(studySpots.waitForExistence(timeout: 3))
-        XCTAssertTrue(coffeeCrawl.exists)
-        XCTAssertEqual(cards.count, 2)
-        XCTAssertTrue(studySpots.label.contains("Includes Temple Coffee Roasters"), "card '\(studySpots.label)' doesn't say why it matched")
-        attachScreenshot("search-temple")
+        let pizzaNight = card("Pizza Night")
+        XCTAssertTrue(pizzaNight.waitForExistence(timeout: 3))
+        XCTAssertEqual(cards.count, 1)
+        XCTAssertTrue(pizzaNight.label.contains("Includes Symposium Restaurant"), "card '\(pizzaNight.label)' doesn't say why it matched")
+        attachScreenshot("search-symposium")
 
         // Results open their map, and the query survives going back.
-        coffeeCrawl.tap()
+        pizzaNight.tap()
         XCTAssertTrue(app.maps.firstMatch.waitForExistence(timeout: 5))
         app.navigationBars.buttons["BackButton"].tap()
-        XCTAssertTrue(studySpots.waitForExistence(timeout: 3))
-        XCTAssertEqual(field.value as? String, "temple")
+        XCTAssertTrue(pizzaNight.waitForExistence(timeout: 3))
+        XCTAssertEqual(field.value as? String, "symposium")
     }
 
     func testNoResultsAndClearing() {
         let field = app.searchFields.firstMatch
         field.tap()
-        field.typeText("sushi")
-        XCTAssertTrue(app.staticTexts["No Results for “sushi”"].waitForExistence(timeout: 3))
+        field.typeText("karting")
+        XCTAssertTrue(app.staticTexts["No Results for “karting”"].waitForExistence(timeout: 3))
         attachScreenshot("search-no-results")
 
         // iOS 26 and later replace the search bar's Cancel button with Close.

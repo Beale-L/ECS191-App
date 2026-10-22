@@ -74,7 +74,7 @@ struct CollectionMapView: View {
             switch sheet {
             case .location:
                 if let selectedLocation {
-                    LocationSheet(location: selectedLocation)
+                    LocationSheet(location: selectedLocation, collectionID: collection.id)
                         .presentationDetents([.medium, .large])
                         .presentationDragIndicator(.visible)
                         .presentationBackgroundInteraction(.enabled(upThrough: .medium))

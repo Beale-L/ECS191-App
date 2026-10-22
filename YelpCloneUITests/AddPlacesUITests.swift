@@ -82,6 +82,44 @@ final class AddPlacesUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Not yet rated"].waitForExistence(timeout: 3))
     }
 
+    /// Before searching, the editor and picker suggest places that fit the
+    /// draft, and the full list is one tap away, grouped by type.
+    func testSuggestionsBeforeSearching() {
+        // The editor offers a few one-tap adds based on the title and label.
+        let quickAdd = app.buttons.matching(identifier: "QuickAdd").firstMatch
+        XCTAssertTrue(quickAdd.waitForExistence(timeout: 3), "no suggested places in the editor")
+        attachScreenshot("editor-suggestions")
+        let added = quickAdd.label.replacingOccurrences(of: "Add ", with: "")
+        quickAdd.tap()
+        XCTAssertTrue(app.staticTexts[added].waitForExistence(timeout: 3), "\(added) wasn't added")
+
+        openPicker()
+        let header = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] 'Suggested for'")).firstMatch
+        XCTAssertTrue(header.waitForExistence(timeout: 3), "no suggestions in the picker")
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label ==[c] 'Places in the App'")).firstMatch.exists,
+                       "the full list shouldn't be the first thing shown")
+        attachScreenshot("picker-suggestions")
+
+        // Tapping a suggestion selects it in place.
+        let rows = app.buttons.matching(identifier: "PlaceRow")
+        let suggestion = rows.allElementsBoundByIndex.first { !$0.isSelected && $0.isHittable }
+        XCTAssertNotNil(suggestion, "every suggestion was already selected")
+        let label = suggestion!.label
+        suggestion!.tap()
+        let tapped = rows.matching(NSPredicate(format: "label == %@", label)).firstMatch
+        XCTAssertTrue(tapped.isSelected, "\(label) wasn't selected")
+
+        // Browse All Places lists everything by type.
+        for _ in 0..<4 where !app.buttons["BrowseAllPlaces"].isHittable { app.collectionViews.firstMatch.swipeUp() }
+        app.buttons["BrowseAllPlaces"].tap()
+        XCTAssertTrue(app.navigationBars["All Places"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label ==[c] 'American'")).firstMatch.exists, "places aren't grouped by type")
+        attachScreenshot("all-places")
+        app.navigationBars["All Places"].buttons["BackButton"].tap()
+        XCTAssertTrue(app.navigationBars["Add Places"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["3 places selected"].exists || app.staticTexts["2 places selected"].exists)
+    }
+
     // MARK: - Helpers
 
     private func field(_ identifier: String) -> XCUIElement {

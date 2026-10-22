@@ -173,6 +173,41 @@ final class M2InteractUITests: XCTestCase {
         XCTAssertTrue(app.otherElements["AnnotationContainer"].exists, "guest can't browse after signing out")
     }
 
+    /// 13. A single place can be saved from its pin without favoriting the
+    /// collection. It shows under Favorites > Places and can be unsaved there.
+    func test13_SaveASinglePlace() {
+        launch()
+        let collection = seed.collection(titled: "The Only Burger That Matters")
+        let place = seed.locations(in: collection)[0]
+        openCollection(collection.title)
+        app.otherElements["AnnotationContainer"].otherElements[place.name].tap()
+
+        // A guest is asked to sign in, and the save applies afterward.
+        let save = app.buttons["Save Place"]
+        XCTAssertTrue(save.waitForExistence(timeout: 3), "the place sheet has no Save button")
+        save.tap()
+        signIn(as: "saver")
+        XCTAssertTrue(waitFor { save.isSelected }, "the place wasn't saved after sign-in")
+        XCTAssertFalse(app.buttons["Favorite"].isSelected, "saving a place shouldn't favorite its collection")
+        dismissPlaceSheet()
+
+        app.tabBars.buttons["Favorites"].tap()
+        XCTAssertTrue(app.staticTexts["No Favorites Yet"].waitForExistence(timeout: 3), "the collection itself isn't a favorite")
+        app.segmentedControls.buttons["Places"].tap()
+        let row = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", place.name)).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 3), "\(place.name) isn't under Places")
+        XCTAssertTrue(row.label.contains("From \(collection.title)"), "row '\(row.label)' doesn't say where it was saved from")
+
+        // Unsave from the place's sheet.
+        row.tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 3))
+        XCTAssertTrue(save.isSelected)
+        save.tap()
+        XCTAssertTrue(waitFor { !save.isSelected })
+        dismissPlaceSheet()
+        XCTAssertTrue(app.staticTexts["No Saved Places"].waitForExistence(timeout: 3))
+    }
+
     // MARK: - Helpers
 
     /// The account sheet, found by its username field since its title follows the mode.
@@ -222,6 +257,14 @@ final class M2InteractUITests: XCTestCase {
         bar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
             .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.99)))
         XCTAssertTrue(waitUntilGone(bar))
+    }
+
+    /// Drags the place sheet down by its grabber.
+    private func dismissPlaceSheet() {
+        let grabber = app.buttons["Sheet Grabber"]
+        grabber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.99)))
+        XCTAssertTrue(waitUntilGone(app.buttons["Save Place"]), "the place sheet didn't close")
     }
 
     private func typeComment(_ text: String) {

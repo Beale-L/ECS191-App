@@ -23,9 +23,9 @@ final class M1BrowseUITests: XCTestCase {
         attachScreenshot("launch")
     }
 
-    /// 2. The grid shows every seeded collection with its title, tag, author, and location count.
+    /// 2. The grid shows seeded collections with their title, tag, author, and location count.
     func test2_GridShowsEveryCollection() {
-        for collection in seed.collections {
+        for collection in seed.handWritten {
             let card = card(for: collection)
             scrollTo(card)
             XCTAssertTrue(card.exists, "missing card \(collection.title)")
@@ -63,7 +63,7 @@ final class M1BrowseUITests: XCTestCase {
         _ = app.maps.firstMatch.waitForExistence(timeout: 10)
         goBack()
 
-        for collection in seed.collections {
+        for collection in seed.handWritten {
             let locations = seed.locations(in: collection)
             let card = card(for: collection)
             let map = app.maps.firstMatch
@@ -101,7 +101,7 @@ final class M1BrowseUITests: XCTestCase {
     /// than failing the test.
     func test4_EveryPinOpensItsPopup() {
         var neededZoom: [String] = []
-        for collection in seed.collections {
+        for collection in seed.handWritten {
             let card = card(for: collection)
             scrollTo(card)
             card.tap()
@@ -198,7 +198,7 @@ final class M1BrowseUITests: XCTestCase {
 
     /// 5. Going back returns to the grid at the same scroll position.
     func test5_BackKeepsScrollPosition() {
-        let card = card(for: seed.collections.last!)
+        let card = card(for: seed.handWritten.last!)
         scrollTo(card)
         let before = card.frame
 

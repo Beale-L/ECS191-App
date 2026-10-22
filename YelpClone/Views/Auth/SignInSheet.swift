@@ -40,7 +40,7 @@ struct SignInSheet: View {
                     .listRowInsets(EdgeInsets())
                 } footer: {
                     Text(store.pending == nil
-                         ? "An account lets you like, favorite, comment on, and make collections."
+                         ? "An account lets you like, favorite, comment on, and make collections, and save places."
                          : "Sign in to finish what you started.")
                 }
 

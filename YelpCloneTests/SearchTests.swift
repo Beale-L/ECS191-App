@@ -3,10 +3,15 @@ import Testing
 
 @MainActor
 struct SearchTests {
+    /// The ten hand-written collections at the top of `seed.json`, so expected
+    /// results don't shift as more generated collections are added below them.
     private let catalog: Catalog
+    private let fullCatalog: Catalog
 
     init() async throws {
-        catalog = try await LocalCollectionStore().loadCatalog()
+        let seed = try LocalCollectionStore().loadSeed()
+        catalog = Catalog(collections: Array(seed.collections.prefix(10)), locations: seed.locations, comments: seed.comments)
+        fullCatalog = try await LocalCollectionStore().loadCatalog()
     }
 
     private func titles(_ query: String) -> [String] {
@@ -48,5 +53,16 @@ struct SearchTests {
 
     @Test func noMatches() {
         #expect(titles("sushi").isEmpty)
+        #expect(fullCatalog.search("snowboarding").isEmpty)
+    }
+
+    @Test func findsActivityCollections() {
+        let bats = fullCatalog.search("bats").map(\.collection.title)
+        #expect(bats.contains("Bats Over the Causeway"))
+        let biking = fullCatalog.search("mountain biking")
+        #expect(biking.count >= 30)
+        let sudwerk = fullCatalog.search("sudwerk")
+        #expect(!sudwerk.isEmpty)
+        #expect(sudwerk.allSatisfy { $0.matchingPlaces == ["Sudwerk Brewing Co."] })
     }
 }

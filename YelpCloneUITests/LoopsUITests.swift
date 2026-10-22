@@ -112,9 +112,14 @@ final class LoopsUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Add at least one place."].exists)
         XCTAssertTrue(app.navigationBars["New Collection"].exists, "the editor should stay open")
 
-        // Picking a suggested label fills it in.
+        // Typing part of a label offers matching labels; picking one fills it in.
+        let label = field("LabelField")
+        label.tap()
+        label.typeText("cof")
+        XCTAssertTrue(app.buttons["Use label Coffee"].waitForExistence(timeout: 3), "no completion for 'cof'")
         app.buttons["Use label Coffee"].tap()
-        XCTAssertEqual(field("LabelField").value as? String, "Coffee")
+        XCTAssertEqual(label.value as? String, "Coffee")
+        XCTAssertFalse(app.buttons["Use label Coffee"].exists, "suggestions should close once a label is picked")
     }
 
     /// A guest who taps New Collection signs in, then lands in the editor.

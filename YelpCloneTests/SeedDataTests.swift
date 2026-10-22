@@ -18,6 +18,15 @@ struct SeedDataTests {
         #expect(Set(seed.collections.map(\.tag)).count >= 4)
     }
 
+    @Test func seedHasActivityCollections() {
+        #expect(seed.collections.count >= 300)
+        let tags = Set(seed.collections.map(\.tag))
+        for tag in ["Mountain Biking", "Date Night", "Bars", "Animal Watching"] {
+            #expect(tags.contains(tag), "no \(tag) collections")
+        }
+        #expect(Set(seed.collections.map { $0.title.lowercased() }).count == seed.collections.count, "duplicate titles")
+    }
+
     @Test func idsAreUnique() {
         #expect(Set(seed.collections.map(\.id)).count == seed.collections.count)
         #expect(Set(seed.locations.map(\.id)).count == seed.locations.count)
@@ -45,9 +54,10 @@ struct SeedDataTests {
             if let priceLevel = location.priceLevel {
                 #expect((1...4).contains(priceLevel), "\(location.id) priceLevel")
             }
-            // Catches swapped or mistyped coordinates: everything is in or near Davis.
-            #expect((38.45...38.65).contains(location.latitude), "\(location.id) latitude")
-            #expect((-121.85 ... -121.65).contains(location.longitude), "\(location.id) longitude")
+            // Catches swapped or mistyped coordinates: everything is within a
+            // day trip of Davis, from Lake Berryessa to Sacramento.
+            #expect((38.40...38.80).contains(location.latitude), "\(location.id) latitude")
+            #expect((-122.30 ... -121.45).contains(location.longitude), "\(location.id) longitude")
         }
     }
 

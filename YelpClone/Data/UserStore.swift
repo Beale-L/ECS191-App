@@ -8,6 +8,16 @@ struct UserData: Codable, Equatable {
     var comments: [Comment] = []
     /// Collections this user made.
     var collections: [MapCollection] = []
+    /// Single places saved on their own, oldest first.
+    var savedPlaces: [SavedPlace] = []
+}
+
+/// A place saved on its own, without favoriting the whole collection.
+struct SavedPlace: Codable, Equatable {
+    let locationID: Location.ID
+    /// The collection it was saved from, if any.
+    let collectionID: MapCollection.ID?
+    let savedAt: Date
 }
 
 /// Everything `UserStore` persists. Data is kept per username, so signing out
@@ -30,6 +40,7 @@ extension UserData {
         favorites = try container.decodeIfPresent(Set<MapCollection.ID>.self, forKey: .favorites) ?? []
         comments = try container.decodeIfPresent([Comment].self, forKey: .comments) ?? []
         collections = try container.decodeIfPresent([MapCollection].self, forKey: .collections) ?? []
+        savedPlaces = try container.decodeIfPresent([SavedPlace].self, forKey: .savedPlaces) ?? []
     }
 }
 
@@ -48,6 +59,8 @@ extension SavedUserState {
 enum PendingAction: Equatable {
     case react(MapCollection.ID, Reaction)
     case favorite(MapCollection.ID)
+    /// Saves or unsaves one place, noting the collection it was seen in.
+    case savePlace(Location.ID, from: MapCollection.ID?)
     case postComment(MapCollection.ID, String)
 }
 
@@ -98,6 +111,15 @@ final class UserStore {
 
     func isFavorite(_ collectionID: MapCollection.ID) -> Bool {
         currentUser.favorites.contains(collectionID)
+    }
+
+    func isSaved(_ locationID: Location.ID) -> Bool {
+        currentUser.savedPlaces.contains { $0.locationID == locationID }
+    }
+
+    /// The signed-in user's saved places, newest first.
+    var savedPlaces: [SavedPlace] {
+        currentUser.savedPlaces.reversed()
     }
 
     /// The seeded count plus this user's like. Seed data is never changed.
@@ -318,6 +340,8 @@ final class UserStore {
             toggle(reaction, on: id)
         case .favorite(let id):
             toggleFavorite(id)
+        case .savePlace(let id, let collectionID):
+            toggleSavedPlace(id, from: collectionID)
         case .postComment(let id, let text):
             postComment(text, on: id)
         }
@@ -333,6 +357,17 @@ final class UserStore {
     private func toggleFavorite(_ id: MapCollection.ID) {
         mutateCurrentUser { user in
             if user.favorites.remove(id) == nil { user.favorites.insert(id) }
+        }
+    }
+
+    private func toggleSavedPlace(_ id: Location.ID, from collectionID: MapCollection.ID?) {
+        let saved = SavedPlace(locationID: id, collectionID: collectionID, savedAt: now())
+        mutateCurrentUser { user in
+            if user.savedPlaces.contains(where: { $0.locationID == id }) {
+                user.savedPlaces.removeAll { $0.locationID == id }
+            } else {
+                user.savedPlaces.append(saved)
+            }
         }
     }
 

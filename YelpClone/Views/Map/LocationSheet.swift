@@ -2,8 +2,11 @@ import SwiftUI
 
 struct LocationSheet: View {
     let location: Location
+    /// The collection this place was opened from, remembered when it's saved.
+    var collectionID: MapCollection.ID?
 
     @Environment(\.openURL) private var openURL
+    @Environment(UserStore.self) private var user
 
     var body: some View {
         ScrollView {
@@ -39,19 +42,47 @@ struct LocationSheet: View {
                 Label(location.address, systemImage: "mappin.and.ellipse")
                     .font(.subheadline)
 
-                Button {
-                    openURL(location.appleMapsURL)
-                } label: {
-                    Label("Open in Maps", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
-                        .frame(maxWidth: .infinity)
+                HStack(spacing: 10) {
+                    Button {
+                        openURL(location.appleMapsURL)
+                    } label: {
+                        Label("Open in Maps", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    SaveButton(isSaved: isSaved) {
+                        user.perform(.savePlace(location.id, from: collectionID))
+                    }
                 }
-                .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .padding(.top, 4)
             }
             .padding(20)
             .padding(.top, 8)
         }
+        .sensoryFeedback(.selection, trigger: isSaved)
+        // A guest who taps Save signs in from here, since this sheet is on top.
+        .signInGate()
+    }
+
+    private var isSaved: Bool { user.isSaved(location.id) }
+}
+
+/// Saves just this place to Favorites, separate from favoriting its collection.
+private struct SaveButton: View {
+    let isSaved: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(isSaved ? "Saved" : "Save", systemImage: isSaved ? "bookmark.fill" : "bookmark")
+        }
+        .buttonStyle(.bordered)
+        .tint(isSaved ? .accentColor : .secondary)
+        .accessibilityLabel("Save Place")
+        .accessibilityValue(isSaved ? "Saved" : "")
+        .accessibilityAddTraits(isSaved ? .isSelected : [])
     }
 }
 
@@ -63,4 +94,5 @@ struct LocationSheet: View {
         ))
         .presentationDetents([.medium])
     }
+    .environment(UserStore(persistence: InMemoryUserStatePersistence()))
 }

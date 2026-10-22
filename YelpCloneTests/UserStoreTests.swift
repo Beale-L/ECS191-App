@@ -51,6 +51,49 @@ struct UserStoreTests {
         #expect(!store.isFavorite(collection.id))
     }
 
+    // MARK: Saved places
+
+    @Test func savingAPlaceDoesNotFavoriteItsCollection() {
+        let store = signedInStore()
+        store.perform(.savePlace("loc-central-park", from: collection.id))
+        #expect(store.isSaved("loc-central-park"))
+        #expect(!store.isFavorite(collection.id))
+        #expect(store.savedPlaces.map(\.collectionID) == [collection.id])
+
+        store.perform(.savePlace("loc-central-park", from: collection.id))
+        #expect(!store.isSaved("loc-central-park"), "tapping Save again unsaves")
+        #expect(store.savedPlaces.isEmpty)
+    }
+
+    @Test func savedPlacesAreNewestFirstAndSavedOnce() {
+        var clock = Date(timeIntervalSince1970: 1_000)
+        let store = UserStore(persistence: persistence, now: { clock })
+        store.beginSession(as: "alice")
+        store.perform(.savePlace("loc-a", from: nil))
+        clock += 60
+        store.perform(.savePlace("loc-b", from: collection.id))
+        #expect(store.savedPlaces.map(\.locationID) == ["loc-b", "loc-a"])
+        #expect(store.savedPlaces.first?.savedAt == clock)
+    }
+
+    @Test func savedPlacesArePerUserAndSurviveRelaunch() {
+        let store = signedInStore("alice")
+        store.perform(.savePlace("loc-a", from: nil))
+        store.beginSession(as: "bob")
+        #expect(!store.isSaved("loc-a"), "each user has their own saved places")
+
+        let relaunched = UserStore(persistence: persistence)
+        relaunched.beginSession(as: "alice")
+        #expect(relaunched.isSaved("loc-a"))
+    }
+
+    @Test func stateSavedBeforeSavedPlacesStillLoads() throws {
+        let json = #"{"username":"alice","users":{"alice":{"favorites":["col-test"]}}}"#
+        let state = try JSONDecoder().decode(SavedUserState.self, from: Data(json.utf8))
+        #expect(state.users["alice"]?.favorites == ["col-test"])
+        #expect(state.users["alice"]?.savedPlaces == [])
+    }
+
     // MARK: Auth gate (criteria 7 and 8)
 
     @Test(arguments: [
@@ -58,6 +101,7 @@ struct UserStoreTests {
         .react("col-test", .dislike),
         .favorite("col-test"),
         .postComment("col-test", "Nice"),
+        .savePlace("loc-test", from: "col-test"),
     ])
     func guestActionWaitsForSignIn(action: PendingAction) {
         let store = UserStore(persistence: persistence)
@@ -73,6 +117,7 @@ struct UserStoreTests {
         case .react(let id, let reaction): #expect(store.reaction(to: id) == reaction)
         case .favorite(let id): #expect(store.isFavorite(id))
         case .postComment(let id, let text): #expect(store.postedComments(for: id).map(\.text) == [text])
+        case .savePlace(let id, _): #expect(store.isSaved(id))
         }
     }
 
